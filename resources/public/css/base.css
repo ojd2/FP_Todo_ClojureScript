@@ -1,0 +1,204 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #fff;
+    color: #4d4d4d;
+    width: 100%;
+    margin: 0 auto;
+}
+
+#wrapper {
+    background: #fff;
+    margin: 0px auto;
+    position: relative;
+    width:980px;
+    text-align:center;
+}
+
+#wrapper input::-webkit-input-placeholder {
+    font-style: italic;
+}
+
+#wrapper input:-moz-placeholder {
+    font-style: italic;
+    color: #a9a9a9;
+}
+
+#header h1 {
+    font-size: 28px;
+    font-weight: 400;
+    text-align: center;
+}
+
+#header {
+    border-radius: inherit;
+    margin: 0 auto;
+    padding-top: 50px;
+    padding-bottom:20px;
+    text-align: center;
+    width: 980px;
+
+}
+
+#todo-input {
+    display: inline-block;
+    margin: 0 0 20px;
+    padding: 20px;
+    width: 100%;
+    -moz-appearance: none;
+    background-color: #f8f8fe;
+    border: 1px solid #cacaca;
+    border-radius: 0;
+    box-shadow: 0 1px 2px hsla(0, 0%, 4%, 0.1) inset;
+    box-sizing: border-box;
+    color: #0a0a0a;
+    display: block;
+    font-family: inherit;
+    font-size: 1rem;
+    height: 3.438rem;
+    text-align:center;
+}
+
+#main {
+    position: relative;
+    z-index: 2;
+    border-top: 1px dotted #adadad;
+}
+
+#toggle-all {
+    position:relative;
+    width: 40px;
+    text-align: center;
+}
+
+#toggle-all:before {
+    content: '»';
+    font-size: 28px;
+    color: #d9d9d9;
+    padding: 0 25px 7px;
+}
+
+#toggle-all:checked:before {
+    color: #737373;
+}
+
+#todo-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#todo-list li {
+    position: relative;
+    font-size: 24px;
+    border-bottom: 1px dotted #ccc;
+}
+
+#todo-list li:last-child {
+    border-bottom: none;
+}
+
+#todo-list li.editing {
+    border-bottom: none;
+    padding: 0;
+}
+
+#todo-list li.editing .edit {
+    display: block;
+    width: 506px;
+    padding: 13px 17px 12px 17px;
+    margin: 0 0 0 43px;
+}
+
+#todo-list li.editing .view {
+    display: none;
+}
+
+#todo-list li .toggle {
+    text-align: center;
+    width: 40px;
+    height: auto;
+    display:inline-block;
+    margin: auto 0;
+}
+
+#todo-list li .toggle:after {
+    content: '✔';
+    line-height: 43px; /* 40 + a couple of pixels visual adjustment */
+    font-size: 20px;
+    color: #d9d9d9;
+    text-shadow: 0 -1px 0 #bfbfbf;
+}
+
+#todo-list li .toggle:checked:after {
+    color: #85ada7;
+    text-shadow: 0 1px 0 #669991;
+    bottom: 1px;
+    position: relative;
+}
+
+#todo-list li label {
+    word-break: break-word;
+    display: inline-block;
+    line-height: 1.2;
+}
+
+#todo-list li.completed label {
+    color: #a9a9a9;
+    text-decoration: line-through;
+}
+
+#todo-list li .destroy {
+    display: display-inline;
+    width: 40px;
+    height: 40px;
+    margin: auto 0;
+    font-size: 22px;
+    cursor:pointer;
+}
+
+#todo-list li .destroy:hover {
+    text-shadow: 0 0 1px #000,
+}
+
+#todo-list li .destroy:after {
+    content: '✖';
+}
+
+#todo-list li:hover .destroy {
+    display: inline-block;
+}
+
+#todo-list li .edit {
+    display: none;
+}
+
+#todo-list li.editing:last-child {
+    margin-bottom: -1px;
+}
+
+#footer {
+    color: #000;
+    padding: 0 15px;
+    position: relative;
+    right: 0;
+    bottom: -31px;
+    left: 0;
+    height: 20px;
+    z-index: 1;
+    text-align: center;
+}
+
+#todo-count {
+    text-align: center;
+}
+#clear-completed {
+    position: relative;
+}
+.hidden{
+    display:none;
+}
