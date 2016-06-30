@@ -17,9 +17,6 @@
 ;**************************************** THE MODEL  ******************************************;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Define variable for the return key so users can also add todo.
-;; Stores the keycode == 13.
-(def ENTER 13)
 ;; Define a variable called 'todo-list' that stores an 'atom'.
 ;; An Atom provides a way to manage a shared, synchronous, independent state.
 ;; They are a reference type and can be allocated using @ -> e.g -> '@todo-list'.
@@ -30,18 +27,6 @@
 
 ;; Shortcut for dom/element.
 (defn elemt [tag params] (dom/element tag params))
-
-;; Define a method for stats which displays how many completed tasks are left.
-(defn stats []
-  ;; 'Total' stores 'count' method of our atom.
-  (let [total     (count @todo-list)
-        ;; The 'count' method is called again on the atom.
-        ;; Next, 'filter' is executed and counts only 'completed'.
-        completed (count (filter #(= true (% "completed")) @todo-list))
-        ;; Then a simple subtraction that -> total - completed.
-        left      (- total completed)]
-    ;; Finally, point our returned values to the associated variables.
-    {:total total :completed completed :left left}))
 
 ;; Define a method to remove a todo by it's 'id' number.
 (defn remove-todo-by-id [id]
@@ -67,7 +52,7 @@
     ;; Finally, refresh the atom and state view.
     (refresh-data)))
 
-;; DEFINE a method to IDENTIFY whether checkbox is CHECKED.
+;; DEFINE method to IDENTIFY whether checkbox is CHECKED.
 (defn checkbox-change-handler [event]
   ;; Set up handler event. We can use the '-' syntax to use pure JS.
   (let [checkbox (.-target event)
@@ -76,23 +61,36 @@
         ;; Calculate if todo item is checked.
         checked  (.-checked checkbox)]
     ;; Then mark the todo item as chcked and completed.
-    (id "completed" checked)
+    ;; KEY: update-attr -> status of the checked item.
+    (update-attr id "completed" checked)
     ;; REFRESH the atom state.
     (refresh-data)))
 
+;; DEFINE method to CAPTURE the INPUT VALUE from the main input form in the DOM.
 (defn input-todo-key-handler [event]
+  ;; TRIGGER event handler on the input variable.
   (let [input (.-target event)
+        ;; Text = input.value() JS '-value input' equivalent.
+        ;; The '.trim' method is also applied.
         text  (.trim (.-value input))
-        id    (apply str (drop 6 (.-id input)))]
-    (if (seq text)
-      (if (= ENTER (.-keyCode event))
+        ;; The 'id' is converted to STRING.
+        id    (apply str (.-id input))]
+    ;; Returns a sequence (seq) on the collection. If the collection is
+    ;; empty, returns nil. Therefore, (seq nil) returns nil as well.
+    ;; Sequence also works on Strings, native Java arrays (of reference types) and any objects
+    ;; that implement Iterable.
+    (if (vals text)
+      (if (= 13 (.-keyCode event))
         (do
-          (id)
+          (update-attr id "title" text)
           (refresh-data)))
-      (do
-        (remove-todo-by-id id)
-        (refresh-data)))))
+      )))
 
+
+(defn update-attr [id attr val]
+  (let [updated
+        (vec (map #(if (= (% "id") id) (conj % {attr val}) %) @todo-list))]
+(reset! todo-list updated)))
 
 (defn redraw-todos-ui []
   (set! (.-innerHTML (by-id "todo-list")) "")
@@ -116,7 +114,6 @@
 
         (event/listen checkbox "change" checkbox-change-handler)
         (event/listen delete-link "click" delete-click-handler)
-        (event/listen input-todo "keypress" input-todo-key-handler)
 
         (dom/append div-display checkbox label delete-link)
         (dom/append li div-display input-todo)
@@ -129,34 +126,13 @@
         (dom/append (by-id "todo-list") li)))
     @todo-list)))
 
-(defn draw-todo-count []
-  (let [stat (stats)
-        text (str " " (if (= 1 (:left stat)) "item" "items") " left")
-        number (dom/element "strong" (str (:left stat)))
-        remaining (dom/element "span" {"id" "todo-count"})
-        footer (by-id "footer")]
-    (dom/append remaining number text)
-    (dom/append footer remaining)))
+
 
 (defn clear-click-handler []
   (reset! todo-list (filter #(not (% "completed")) @todo-list))
   (refresh-data))
 
-(defn draw-todo-clear []
-  (let [footer (by-id "footer")
-        message (str "Clear completed (" (:completed (stats)) ")")
-        button (dom/element "button" {"id" "clear-completed"} message)]
-    (ev/listen button "click" clear-click-handler)
-    (dom/append footer button)))
 
-(defn redraw-status-ui []
-  (let [footer  (by-id "footer")
-        display (if (empty? @todo-list) "none" "block")
-        stat (stats)]
-    (dom/remove-children "footer")
-    (dom/set-properties footer {"style" (str "display:" display)})
-    (if (not= 0 (:completed stat)) (draw-todo-clear))
-    (if (not= 0 (:total stat)) (draw-todo-count))))
 
 (defn change-toggle-all-checkbox-state []
   (let [toggle-all  (by-id "toggle-all")
@@ -165,10 +141,10 @@
 
 (defn refresh-data []
   (redraw-todos-ui)
-  (redraw-status-ui)
+
   (change-toggle-all-checkbox-state))
 
-;; This get-uuid fn is almost equiv to the original
+;; This get-uuid fn is almost equiv to the original Todo MVC approach.
 (defn get-uuid []
   (apply
    str
@@ -187,14 +163,11 @@
         (refresh-data)))))
 
 (defn todo-input-handler [event]
-  (if (= ENTER (.-keyCode event))
+  (if (= 13 (.-keyCode event))
     (add-todo (.-value (by-id "todo-input")))))
 
 (defn add-todo-input-handler [event]
     (add-todo (.-value (by-id "todo-input"))))
-
-;;(defn remove-todo-handler [event]
-;; (delete-click-handler id)(refresh-data))
 
 (defn toggle-all-handler [event]
   (let [checked (.-checked (.-target event))
