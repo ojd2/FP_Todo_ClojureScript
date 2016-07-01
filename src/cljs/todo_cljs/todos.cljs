@@ -1,9 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;************************************** PREREQUISITES  ****************************************;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Set up Clojure name space (ns) and require modules to be extended
-;; throughout the application.
+;; Set up Clojure name space (ns) and require modules to be extended throughout the application.
 (ns todo_cljs.todos
   (:require [clojure.browser.repl :as repl] ;; Used for internal compiler feedback.
             [clojure.browser.dom  :as dom] ;; Used for selecting DOM elements.
@@ -30,7 +28,9 @@
 
 ;; Define a method to remove a todo by it's 'id' number.
 (defn remove-todo-by-id [id]
-;; The 'reset!' method is called upon our atom.
+  ;; The 'reset!' method is called upon our atom.
+  ;; The reset! method sets the value of atom to newval without
+  ;; regard for the current value. Therefore it RETURN newval.
   (reset! todo-list
           ;; A simple filter method is called to remove the selected 'id'.
           (vec (filter #(not= (% "id") id) @todo-list))))
@@ -72,17 +72,17 @@
   (let [input (.-target event)
         ;; Text = input.value() JS '-value input' equivalent.
         ;; The '.trim' method is also applied.
-        text  (.trim (.-value input))
+        todo  (.trim (.-value input))
         ;; The 'id' is converted to STRING.
         id    (apply str (.-id input))]
     ;; Returns a sequence (seq) on the collection. If the collection is
     ;; empty, returns nil. Therefore, (seq nil) returns nil as well.
     ;; Sequence also works on Strings, native Java arrays (of reference types) and any objects
     ;; that implement Iterable.
-    (if (vals text)
+    (if (vals todo)
       (if (= 13 (.-keyCode event))
         (do
-          (update-attr id "title" text)
+          (update-attr id "title" todo)
           (refresh-data)))
       )))
 
@@ -99,22 +99,26 @@
 ;; else reset! atom and updated, reverting to default.
 (reset! todo-list updated)))
 
+;; DEFINE a method that simply appends HTML to DOM.
 (defn redraw-todos-ui []
+  ;; We 'set!' our atom and then locate the DOM element 'todo-list'
+  ;; within the index.html file.
   (set! (.-innerHTML (by-id "todo-list")) "")
-  ;; (dom/remove-children "todo-list")) ???
+  ;; Is this copying the `input-todo' <input> element already present
+  ;; in the index.html file?
   (dom/set-value (by-id "todo-input") "")
-  (dorun ;; materialize lazy list returned by map below
-   (map
+  (dorun ;; Here we materialize a lazy list returned by map below:
+   (map  ;; Returns the map with the vals mapped to the keys.
     (fn [todo]
       (let [
         id          (todo "id")
-        li          (elemt "li" {"id" (str "li_" id)})
+        li          (elemt "li" {"id" "todo-item"})
         checkbox    (elemt "input" {"class" "toggle" "data-todo-id" id
                                    "type" "checkbox"})
         label       (elemt "label" {"data-todo-id" id})
         delete-link (elemt "button" {"class" "destroy" "data-todo-id" id})
         div-display (elemt "div" {"class" "view" "data-todo-id" id})
-        input-todo  (elemt "input" {"id" (str "input_" id) "class" "edit"})]
+        input-todo  (elemt "span" {"id" (str "input_" id) "class" "edit"})]
 
         (dom/set-text label (todo "title"))
         (dom/set-value input-todo (todo "title"))
@@ -134,7 +138,9 @@
     @todo-list)))
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;***************************************** VIEW ***********************************************;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn clear-click-handler []
   (reset! todo-list (filter #(not (% "completed")) @todo-list))
   (refresh-data))
@@ -148,32 +154,46 @@
 
 (defn refresh-data []
   (redraw-todos-ui)
-
   (change-toggle-all-checkbox-state))
 
-;; This get-uuid fn is almost equiv to the original Todo MVC approach.
-(defn get-uuid []
-  (apply
-   str
-   (map
-    (fn [x]
-      (if (= x \0)
-        (.toString (bit-or (* 16 (.random js/Math)) 0) 16)
-        x))
-    "00000000-0000-4000-0000-000000000000")))
+;; DEFINE a method to generate a uuid (random) integers.
+;; A Similliar approach is used in actual Todo MVC.
+;; The method after randomly generating integers, then will RETURN
+;; a hexadecimal (0-16) value and a random alphabet letter.
+;; The argument 'n' is used for type checking.
+;; The returned value will be used as the todo item uuid and converted
+;; to a STRING. The STRING takes four arguments and therefore a
+;; returned value will look like -> #uuid "af44".
+(defn gen-uuid []
+  (letfn [(n [] (.toString (rand-int 16) 16))]
+    (let [rhex (.toString (bit-or 0x8 (bit-and 0x3 (rand-int 16))) 16)]
+        (str (n) (n) (n) (n)))))
 
-(defn add-todo [text]
-  (let [tt (.trim text)]
-    (if (seq tt)
+;; DEFINE a method to simply add a todo item to the todo-list atom state.
+(defn add-todo [todo]
+  ;; First pass an argument to contain a 'todo'. This acts as our handler.
+  ;; Then begin a sequence or value check on the todo by trimming.
+  ;; The '.trim' method removes whitespace from both ends of string.
+  ;; As previously mentioned, the'seq' method represents a sequential view
+  ;; of a collection or collection-like entity (computation result).
+  ;; In this case, the [todo] java array containing strings.
+  (let [trimmed (.trim todo)]
+    (if (seq trimmed)
       (do
-        (swap! todo-list conj {"id" (get-uuid) "title" tt "completed" false})
+        ;; Atomically swaps the value of atom to be:
+        ;; (apply f current-value-of-atom args). Note that f may be called
+        ;; multiple times, and thus should be free of side effects.  Returns
+        ;; the value that was swapped in.
+        (swap! todo-list conj {"id" (gen-uuid) "title" trimmed "completed" false})
+        ;; Finally, we REFRESH the data -> this is just our method to update
+        ;; the internal state behaviour after any notifcations.
         (refresh-data)))))
 
-(defn todo-input-handler [event]
+(defn enterkey-handler [event]
   (if (= 13 (.-keyCode event))
     (add-todo (.-value (by-id "todo-input")))))
 
-(defn add-todo-input-handler [event]
+(defn add-todo-handler [event]
     (add-todo (.-value (by-id "todo-input"))))
 
 (defn toggle-all-handler [event]
@@ -183,8 +203,8 @@
     (refresh-data)))
 
 (defn add-event-listeners []
-  (event/listen (by-id "todo-input") "keypress" todo-input-handler)
-  (event/listen (by-id "add-todo") "click" add-todo-input-handler)
+  (event/listen (by-id "todo-input") "keypress" enterkey-handler)
+  (event/listen (by-id "add-todo") "click" add-todo-handler)
   (event/listen (by-id "remove-todo") "click" clear-click-handler)
   (event/listen (by-id "toggle-all") "change" toggle-all-handler)
 )

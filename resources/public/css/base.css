@@ -153,12 +153,13 @@ body {
 }
 
 #todo-list li .destroy {
-    display: display-inline;
-    width: 40px;
-    height: 40px;
+    color: red;
+    cursor: pointer;
+    font-size: 14px;
+    height: auto;
     margin: auto 0;
-    font-size: 22px;
-    cursor:pointer;
+    width: auto;
+    display:inline-block;
 }
 
 #todo-list li .destroy:hover {
@@ -166,7 +167,7 @@ body {
 }
 
 #todo-list li .destroy:after {
-    content: '✖';
+    content: 'x';
 }
 
 #todo-list li:hover .destroy {
