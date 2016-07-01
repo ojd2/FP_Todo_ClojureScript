@@ -100,7 +100,7 @@
 (reset! todo-list updated)))
 
 ;; DEFINE a method that simply appends HTML to DOM.
-(defn redraw-todos-ui []
+(defn append-todos []
   ;; We 'set!' our atom and then locate the DOM element 'todo-list'
   ;; within the index.html file.
   (set! (.-innerHTML (by-id "todo-list")) "")
@@ -153,7 +153,7 @@
     (set! (.-checked toggle-all) all-checked)))
 
 (defn refresh-data []
-  (redraw-todos-ui)
+  (append-todos)
   (change-toggle-all-checkbox-state))
 
 ;; DEFINE a method to generate a uuid (random) integers.
