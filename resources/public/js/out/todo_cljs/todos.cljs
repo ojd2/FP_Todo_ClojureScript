@@ -99,8 +99,12 @@
 ;; else reset! atom and updated, reverting to default.
 (reset! todo-list updated)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;***************************************** VIEW ***********************************************;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; DEFINE a method that simply appends HTML to DOM.
-(defn redraw-todos-ui []
+(defn append-todos []
   ;; We 'set!' our atom and then locate the DOM element 'todo-list'
   ;; within the index.html file.
   (set! (.-innerHTML (by-id "todo-list")) "")
@@ -128,7 +132,8 @@
 
         (dom/append div-display checkbox label delete-link)
         (dom/append li div-display input-todo)
-
+        ;; Small conditional method to express whether todo item should
+        ;; be delegated completed or not.
         (if (todo "completed")
           (do
             (dom/set-properties li {"class" "complete"})
@@ -137,24 +142,18 @@
         (dom/append (by-id "todo-list") li)))
     @todo-list)))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;***************************************** VIEW ***********************************************;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DEFINE method to clear a checked todo item in the todo-list atom.
 (defn clear-click-handler []
+  ;; A simple reset! is called upon the todo-list atom but leaves any
+  ;; checked items that are not set to "completed". i.e -> todo items not checked.
   (reset! todo-list (filter #(not (% "completed")) @todo-list))
+  ;; Callback refresh-data.
   (refresh-data))
 
-
-
-(defn change-toggle-all-checkbox-state []
-  (let [toggle-all  (by-id "toggle-all")
-        all-checked (every? #(= true (% "completed")) @todo-list)]
-    (set! (.-checked toggle-all) all-checked)))
-
+;; DEFINE method that calls the append-todos method above.
+;; The method simply appends HTML DOM elements along with the todo item value.
 (defn refresh-data []
-  (redraw-todos-ui)
-  (change-toggle-all-checkbox-state))
+  (append-todos))
 
 ;; DEFINE a method to generate a uuid (random) integers.
 ;; A Similliar approach is used in actual Todo MVC.
@@ -189,40 +188,46 @@
         ;; the internal state behaviour after any notifcations.
         (refresh-data)))))
 
+;; DEFINE method that returns add-todo afer hitting the return key code.
 (defn enterkey-handler [event]
   (if (= 13 (.-keyCode event))
+    ;; We call add-todo and pass the todo-input value as normal.
     (add-todo (.-value (by-id "todo-input")))))
 
+;; DEFINE method to add a todo item.
 (defn add-todo-handler [event]
+    ;; After event is triggered, pass the value of the todo-input item.
     (add-todo (.-value (by-id "todo-input"))))
 
-(defn toggle-all-handler [event]
-  (let [checked (.-checked (.-target event))
-        toggled (map #(assoc % "completed" checked) @todo-list)]
-    (reset! todo-list toggled)
+;; DEFINE method to check all todo items in the todo-list atom.
+(defn complete-all-handler [event]
+  ;; Let conditional to trigger function completed -> mapping all todos -> "completed".
+  (let [todos (.-target event)
+        completed (map #(assoc % "completed" todos) @todo-list)]
+    (reset! todo-list)
+    ;; Another callback to refresh the data afterwards.
     (refresh-data)))
 
+(defn remove-all-handler [event]
+    (reset! todo-list)
+    (refresh-data))
+
+;; DEFINE a method that appends our event listners onto our HTML elements.
+;; Also include handler activity such as "click, keypress..." etc.
 (defn add-event-listeners []
   (event/listen (by-id "todo-input") "keypress" enterkey-handler)
   (event/listen (by-id "add-todo") "click" add-todo-handler)
   (event/listen (by-id "remove-todo") "click" clear-click-handler)
-  (event/listen (by-id "toggle-all") "change" toggle-all-handler)
+  (event/listen (by-id "complete-all") "click" complete-all-handler)
+  (event/listen (by-id "remove-all") "click" remove-all-handler)
 )
 
+;; DEFINE a method that is to be called when the page loads.
+;; The method will call both refresh-data method & add-event-listners.
 (defn window-load-handler []
   (refresh-data)
   (add-event-listeners))
 
-;; Launch window-load-handler when window loads
+;; Finally, launch window-load-handler when window loads
 ;; -- not sure why (ev/listen js/window "load" fn) does not work
 (events/listen js/window "load" window-load-handler)
-
-;; To connect a browser-attached repl:
-;; (repl/connect "http://localhost:9000/repl")
-
-;; Debugging:
-;; (in-ns 'todo-cljs.todos)
-;; (add-todo "one")
-;; (add-todo "two")
-;; (add-todo "three")
-;; (map #(js/alert %) @todo-list)

@@ -42,7 +42,7 @@ todo_cljs.todos.update_attr = (function update_attr(id,attr,val){var updated = c
 }
 }),cljs.core.deref.call(null,todo_cljs.todos.todo_list)));return cljs.core.reset_BANG_.call(null,todo_cljs.todos.todo_list,updated);
 });
-todo_cljs.todos.redraw_todos_ui = (function redraw_todos_ui(){todo_cljs.todos.by_id.call(null,"todo-list").innerHTML = "";
+todo_cljs.todos.append_todos = (function append_todos(){todo_cljs.todos.by_id.call(null,"todo-list").innerHTML = "";
 clojure.browser.dom.set_value.call(null,todo_cljs.todos.by_id.call(null,"todo-input"),"");
 return cljs.core.dorun.call(null,cljs.core.map.call(null,(function (todo){var id = todo.call(null,"id");var li = todo_cljs.todos.elemt.call(null,"li",new cljs.core.PersistentArrayMap(null, 1, ["id","todo-item"], null));var checkbox = todo_cljs.todos.elemt.call(null,"input",new cljs.core.PersistentArrayMap(null, 3, ["class","toggle","data-todo-id",id,"type","checkbox"], null));var label = todo_cljs.todos.elemt.call(null,"label",new cljs.core.PersistentArrayMap(null, 1, ["data-todo-id",id], null));var delete_link = todo_cljs.todos.elemt.call(null,"button",new cljs.core.PersistentArrayMap(null, 2, ["class","destroy","data-todo-id",id], null));var div_display = todo_cljs.todos.elemt.call(null,"div",new cljs.core.PersistentArrayMap(null, 2, ["class","view","data-todo-id",id], null));var input_todo = todo_cljs.todos.elemt.call(null,"span",new cljs.core.PersistentArrayMap(null, 2, ["id",[cljs.core.str("input_"),cljs.core.str(id)].join(''),"class","edit"], null));clojure.browser.dom.set_text.call(null,label,todo.call(null,"title"));
 clojure.browser.dom.set_value.call(null,input_todo,todo.call(null,"title"));
@@ -62,13 +62,7 @@ todo_cljs.todos.clear_click_handler = (function clear_click_handler(){cljs.core.
 }),cljs.core.deref.call(null,todo_cljs.todos.todo_list)));
 return todo_cljs.todos.refresh_data.call(null);
 });
-todo_cljs.todos.change_toggle_all_checkbox_state = (function change_toggle_all_checkbox_state(){var toggle_all = todo_cljs.todos.by_id.call(null,"toggle-all");var all_checked = cljs.core.every_QMARK_.call(null,((function (toggle_all){
-return (function (p1__4833_SHARP_){return cljs.core._EQ_.call(null,true,p1__4833_SHARP_.call(null,"completed"));
-});})(toggle_all))
-,cljs.core.deref.call(null,todo_cljs.todos.todo_list));return toggle_all.checked = all_checked;
-});
-todo_cljs.todos.refresh_data = (function refresh_data(){todo_cljs.todos.redraw_todos_ui.call(null);
-return todo_cljs.todos.change_toggle_all_checkbox_state.call(null);
+todo_cljs.todos.refresh_data = (function refresh_data(){return todo_cljs.todos.append_todos.call(null);
 });
 todo_cljs.todos.gen_uuid = (function gen_uuid(){var n = (function n(){return cljs.core.rand_int.call(null,16).toString(16);
 });
@@ -89,16 +83,20 @@ todo_cljs.todos.enterkey_handler = (function enterkey_handler(event){if(cljs.cor
 });
 todo_cljs.todos.add_todo_handler = (function add_todo_handler(event){return todo_cljs.todos.add_todo.call(null,todo_cljs.todos.by_id.call(null,"todo-input").value);
 });
-todo_cljs.todos.toggle_all_handler = (function toggle_all_handler(event){var checked = event.target.checked;var toggled = cljs.core.map.call(null,((function (checked){
-return (function (p1__4834_SHARP_){return cljs.core.assoc.call(null,p1__4834_SHARP_,"completed",checked);
-});})(checked))
-,cljs.core.deref.call(null,todo_cljs.todos.todo_list));cljs.core.reset_BANG_.call(null,todo_cljs.todos.todo_list,toggled);
+todo_cljs.todos.complete_all_handler = (function complete_all_handler(event){var todos = event.target;var completed = cljs.core.map.call(null,((function (todos){
+return (function (p1__4833_SHARP_){return cljs.core.assoc.call(null,p1__4833_SHARP_,"completed",todos);
+});})(todos))
+,cljs.core.deref.call(null,todo_cljs.todos.todo_list));cljs.core.reset_BANG_.call(null,todo_cljs.todos.todo_list);
+return todo_cljs.todos.refresh_data.call(null);
+});
+todo_cljs.todos.remove_all_handler = (function remove_all_handler(event){cljs.core.reset_BANG_.call(null,todo_cljs.todos.todo_list);
 return todo_cljs.todos.refresh_data.call(null);
 });
 todo_cljs.todos.add_event_listeners = (function add_event_listeners(){clojure.browser.event.listen.call(null,todo_cljs.todos.by_id.call(null,"todo-input"),"keypress",todo_cljs.todos.enterkey_handler);
 clojure.browser.event.listen.call(null,todo_cljs.todos.by_id.call(null,"add-todo"),"click",todo_cljs.todos.add_todo_handler);
 clojure.browser.event.listen.call(null,todo_cljs.todos.by_id.call(null,"remove-todo"),"click",todo_cljs.todos.clear_click_handler);
-return clojure.browser.event.listen.call(null,todo_cljs.todos.by_id.call(null,"toggle-all"),"change",todo_cljs.todos.toggle_all_handler);
+clojure.browser.event.listen.call(null,todo_cljs.todos.by_id.call(null,"complete-all"),"click",todo_cljs.todos.complete_all_handler);
+return clojure.browser.event.listen.call(null,todo_cljs.todos.by_id.call(null,"remove-all"),"click",todo_cljs.todos.remove_all_handler);
 });
 todo_cljs.todos.window_load_handler = (function window_load_handler(){todo_cljs.todos.refresh_data.call(null);
 return todo_cljs.todos.add_event_listeners.call(null);

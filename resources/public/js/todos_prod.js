@@ -200,11 +200,11 @@ function Ia(a) {
   }
   return c;
 }
-;function Ja(a, b) {
+;function Ka(a, b) {
   null != a && this.append.apply(this, arguments);
 }
-Ja.prototype.va = "";
-Ja.prototype.append = function(a, b, c) {
+Ka.prototype.va = "";
+Ka.prototype.append = function(a, b, c) {
   this.va += a;
   if (null != b) {
     for (var d = 1;d < arguments.length;d++) {
@@ -213,7 +213,7 @@ Ja.prototype.append = function(a, b, c) {
   }
   return this;
 };
-Ja.prototype.toString = function() {
+Ka.prototype.toString = function() {
   return this.va;
 };
 var La, Ma = null;
@@ -546,13 +546,13 @@ function D(a, b) {
   return c.call(null, a, b);
 }
 var Ab = {};
-function Cb(a, b, c) {
+function Bb(a, b, c) {
   if (a ? a.t : a) {
     return a.t(a, b, c);
   }
   var d;
-  d = Cb[q(null == a ? null : a)];
-  if (!d && (d = Cb._, !d)) {
+  d = Bb[q(null == a ? null : a)];
+  if (!d && (d = Bb._, !d)) {
     throw w("IPrintWithWriter.-pr-writer", a);
   }
   return d.call(null, a, b, c);
@@ -676,7 +676,7 @@ Nb.prototype.ob = function(a, b) {
   return this.dc.append(b);
 };
 function G(a) {
-  var b = new Ja;
+  var b = new Ka;
   a.t(null, new Nb(b), Na());
   return "" + y(b);
 }
@@ -1566,7 +1566,7 @@ var y = function() {
       return c.call(this, b, k);
     }
     function c(a, d) {
-      for (var e = new Ja(b.c(a)), l = d;;) {
+      for (var e = new Ka(b.c(a)), l = d;;) {
         if (t(l)) {
           e = e.append(b.c(J(l))), l = M(l);
         } else {
@@ -2372,23 +2372,23 @@ function Xc(a, b, c) {
   if (16 === b) {
     return a.Ya ? a.Ya(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W) : a.Ya ? a.Ya(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W) : a.call(null, c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W);
   }
-  var ea = B(ma), Ka = C(ma);
+  var ea = B(ma), Ja = C(ma);
   if (17 === b) {
     return a.Za ? a.Za(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea) : a.Za ? a.Za(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea) : a.call(null, c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea);
   }
-  var ma = B(Ka), gc = C(Ka);
+  var ma = B(Ja), gc = C(Ja);
   if (18 === b) {
     return a.$a ? a.$a(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma) : a.$a ? a.$a(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma) : a.call(null, c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma);
   }
-  Ka = B(gc);
+  Ja = B(gc);
   gc = C(gc);
   if (19 === b) {
-    return a.ab ? a.ab(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ka) : a.ab ? a.ab(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ka) : a.call(null, c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ka);
+    return a.ab ? a.ab(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ja) : a.ab ? a.ab(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ja) : a.call(null, c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ja);
   }
-  var Bb = B(gc);
+  var Cb = B(gc);
   C(gc);
   if (20 === b) {
-    return a.bb ? a.bb(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ka, Bb) : a.bb ? a.bb(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ka, Bb) : a.call(null, c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ka, Bb);
+    return a.bb ? a.bb(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ja, Cb) : a.bb ? a.bb(c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ja, Cb) : a.call(null, c, d, e, f, h, a, k, l, n, p, r, x, F, E, O, W, ea, ma, Ja, Cb);
   }
   throw Error("Only up to 20 arguments supported on functions");
 }
@@ -4545,7 +4545,7 @@ var Z = function re(b, c, d) {
       };
       return oe.e(c, N(['#inst "', "" + y(b.getUTCFullYear()), "-", e(b.getUTCMonth() + 1, 2), "-", e(b.getUTCDate(), 2), "T", e(b.getUTCHours(), 2), ":", e(b.getUTCMinutes(), 2), ":", e(b.getUTCSeconds(), 2), ".", e(b.getUTCMilliseconds(), 3), "-", '00:00"'], 0));
     }
-    return b instanceof RegExp ? oe.e(c, N(['#"', b.source, '"'], 0)) : (b ? b.f & 2147483648 || b.H || (b.f ? 0 : u(Ab, b)) : u(Ab, b)) ? Cb(b, c, d) : v ? oe.e(c, N(["#\x3c", "" + y(b), "\x3e"], 0)) : null;
+    return b instanceof RegExp ? oe.e(c, N(['#"', b.source, '"'], 0)) : (b ? b.f & 2147483648 || b.H || (b.f ? 0 : u(Ab, b)) : u(Ab, b)) ? Bb(b, c, d) : v ? oe.e(c, N(["#\x3c", "" + y(b), "\x3e"], 0)) : null;
   }
   return null;
 }, te = function() {
@@ -4560,7 +4560,7 @@ var Z = function re(b, c, d) {
       b = "";
     } else {
       b = y;
-      var e = Na(), f = new Ja;
+      var e = Na(), f = new Ka;
       a: {
         var h = new Nb(f);
         Z(J(a), h, e);
@@ -4931,7 +4931,7 @@ var Ee = function() {
           return function E(e) {
             return sc(e) ? me.c(bd.a(E, e)) : (null == e ? 0 : e ? e.f & 8 || e.$d || (e.f ? 0 : u(ab, e)) : u(ab, e)) ? gd(null == e ? null : $a(e), bd.a(E, e)) : e instanceof Array ? wd(bd.a(E, e)) : Ua(e) === Object ? gd(Ld, function() {
               return function(a, b, c, d) {
-                return function Bb(f) {
+                return function Cb(f) {
                   return new V(null, function(a, b, c, d) {
                     return function() {
                       for (;;) {
@@ -4952,10 +4952,10 @@ var Ee = function() {
                               }
                               b = void 0;
                             }
-                            return b ? Pc(h.W(), Bb(Lb(a))) : Pc(h.W(), null);
+                            return b ? Pc(h.W(), Cb(Lb(a))) : Pc(h.W(), null);
                           }
                           h = J(a);
-                          return P(new X(null, 2, 5, vd, [d.c ? d.c(h) : d.call(null, h), E(e[h])], null), Bb(K(a)));
+                          return P(new X(null, 2, 5, vd, [d.c ? d.c(h) : d.call(null, h), E(e[h])], null), Cb(K(a)));
                         }
                         return null;
                       }
@@ -5951,7 +5951,7 @@ function og(a, b, c) {
 function pg() {
   Lf("todo-list").innerHTML = "";
   Of(Lf("todo-input"), "");
-  le.c(bd.a(function(a) {
+  return le.c(bd.a(function(a) {
     var b = a.c ? a.c("id") : a.call(null, "id"), c = jg("li", new s(null, 1, ["id", "todo-item"], null)), d = jg("input", new s(null, 3, ["class", "toggle", "data-todo-id", b, "type", "checkbox"], null)), e = jg("label", new s(null, 1, ["data-todo-id", b], null)), f = jg("button", new s(null, 2, ["class", "destroy", "data-todo-id", b], null)), h = jg("div", new s(null, 2, ["class", "view", "data-todo-id", b], null)), b = jg("span", new s(null, 2, ["id", [y("input_"), y(b)].join(""), "class", "edit"], 
     null)), k = a.c ? a.c("title") : a.call(null, "title"), l = Mf(e);
     if ("textContent" in l) {
@@ -5984,47 +5984,43 @@ function qg() {
   }, ob(ig)));
   return mg.p ? mg.p() : mg.call(null);
 }
-function rg() {
-  var a = Lf("toggle-all"), b = Zc(function() {
-    return function(a) {
-      return Pb.a(!0, a.c ? a.c("completed") : a.call(null, "completed"));
-    };
-  }(a), ob(ig));
-  return a.checked = b;
-}
 function mg() {
-  pg();
-  return rg();
+  return pg();
 }
-function sg() {
+function rg() {
   (8 | 3 & zc(16)).toString(16);
   return[y(zc(16).toString(16)), y(zc(16).toString(16)), y(zc(16).toString(16)), y(zc(16).toString(16))].join("");
 }
-function tg() {
+function sg() {
   var a = Lf("todo-input").value.trim();
-  return I(a) ? (Ae.b(ig, ac, new s(null, 3, ["id", sg(), "title", a, "completed", !1], null)), mg()) : null;
+  return I(a) ? (Ae.b(ig, ac, new s(null, 3, ["id", rg(), "title", a, "completed", !1], null)), pg()) : null;
 }
-function ug(a) {
-  return Pb.a(13, a.keyCode) ? tg() : null;
+function tg(a) {
+  return Pb.a(13, a.keyCode) ? sg() : null;
 }
-function vg() {
-  return tg();
+function ug() {
+  return sg();
 }
-function wg(a) {
-  a = bd.a(function(a) {
+function vg(a) {
+  bd.a(function(a) {
     return function(c) {
       return fc.b(c, "completed", a);
     };
-  }(a.target.checked), ob(ig));
-  ze(ig, a);
-  return mg();
+  }(a.target), ob(ig));
+  ze(ig);
+  return pg();
+}
+function wg() {
+  ze(ig);
+  return pg();
 }
 of(window, "load", function() {
-  mg();
-  vf.b(Lf("todo-input"), "keypress", ug);
-  vf.b(Lf("add-todo"), "click", vg);
+  pg();
+  vf.b(Lf("todo-input"), "keypress", tg);
+  vf.b(Lf("add-todo"), "click", ug);
   vf.b(Lf("remove-todo"), "click", qg);
-  return vf.b(Lf("toggle-all"), "change", wg);
+  vf.b(Lf("complete-all"), "click", vg);
+  return vf.b(Lf("remove-all"), "click", wg);
 });
 
 })();
